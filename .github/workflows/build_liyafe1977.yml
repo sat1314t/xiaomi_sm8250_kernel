@@ -40,7 +40,7 @@ jobs:
           echo "    (binder.c hard-calls MIGT/MIHW funcs, so those CONFIGs must stay enabled)"
           echo "--- STATIC_USERMODEHELPER_PATH line before ---"
           grep -n "STATIC_USERMODEHELPER_PATH" build-action.sh || true
-          sed -i '/--set-str STATIC_USERMODEHELPER_PATH /system/bin/micd/d' build-action.sh
+          sed -i '/STATIC_USERMODEHELPER_PATH/d' build-action.sh
           echo "--- remaining micd refs (expect none) ---"
           grep -n "micd" build-action.sh || true
           bash build-action.sh ${{ inputs.phonea }} ${{ inputs.roota}}
