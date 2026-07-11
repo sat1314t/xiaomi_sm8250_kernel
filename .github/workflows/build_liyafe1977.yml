@@ -1,5 +1,5 @@
 name: Build Kernel liyafe1977
-run-name: Build Kernel with SukiSU Ultra KPM SUSFS
+run-name: Build Kernel SukiSU KPM SUSFS (Lineage-clean, no MIUI overrides)
 on:
   workflow_dispatch:
     inputs:
@@ -36,6 +36,21 @@ jobs:
           cd $GITHUB_WORKSPACE/kernel_workspace
           git clone https://github.com/clcwpwqi/kernel_865_mod -b android15-lineage22-mod --depth=1 android_kernel
           cd android_kernel
+          echo "=== Stripping MIUI overrides for LineageOS compatibility ==="
+          sed -i '/STATIC_USERMODEHELPER_PATH/d' build-action.sh
+          sed -i '/-e XIAOMI_MIUI/d' build-action.sh
+          sed -i '/-e MIGT/d' build-action.sh
+          sed -i '/-e MIHW/d' build-action.sh
+          sed -i '/-e MILLET/d' build-action.sh
+          sed -i '/-e MIUI_ZRAM_MEMORY_TRACKING/d' build-action.sh
+          sed -i '/-e MI_FRAGMENTION/d' build-action.sh
+          sed -i '/-e MI_RECLAIM/d' build-action.sh
+          sed -i '/-e BOOTUP_RECLAIM/d' build-action.sh
+          sed -i '/-e RTMM/d' build-action.sh
+          sed -i '/-e PACKAGE_RUNTIME_INFO/d' build-action.sh
+          sed -i '/-e PERF_HUMANTASK/d' build-action.sh
+          echo "--- remaining MIUI refs in build-action.sh (expect none) ---"
+          grep -nE "XIAOMI_MIUI|MIUI_ZRAM|micd|MILLET|MIGT" build-action.sh || true
           bash build-action.sh ${{ inputs.phonea }} ${{ inputs.roota}}
 
       - name: 3.上传刷机包
